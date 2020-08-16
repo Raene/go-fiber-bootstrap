@@ -8,16 +8,13 @@ import (
 	"github.com/raene/fiberWeb/models"
 )
 
-var (
-	DBConn *gorm.DB
-)
-
-func InitDatabase() {
+func InitDatabase(c chan *gorm.DB) {
 	var err error
-	DBConn, err = gorm.Open("sqlite3", "books.db")
+	DBConn, err := gorm.Open("sqlite3", "books.db")
 	if err != nil {
 		panic("failed to connect database")
 	}
 	DBConn.AutoMigrate(&models.Book{})
 	fmt.Println("Connection Opened to Database")
+	c <- DBConn
 }
