@@ -3,15 +3,17 @@ package main
 import (
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/logger"
+	"github.com/jinzhu/gorm"
 	"github.com/raene/fiberWeb/database"
 	"github.com/raene/fiberWeb/handlers/books"
 	"github.com/raene/fiberWeb/handlers/products"
 )
 
 func main() {
-	database.InitDatabase()
+	var c chan *gorm.DB = make(chan *gorm.DB)
+	go database.InitDatabase(c)
 
-	db := database.DBConn
+	db := <-c
 
 	a := &products.App{}
 	b := &books.App{}
@@ -19,9 +21,10 @@ func main() {
 	api := app.Group("/api", logger.New())
 	a.Router = api
 	b.Router = api
+	b.Db = db
 
-	b.SetupRoutes()
-	a.SetupRoutes()
+	go b.SetupRoutes()
+	go a.SetupRoutes()
 	app.Listen(3000)
 
 	defer db.Close()
