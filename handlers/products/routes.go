@@ -1,17 +1,17 @@
 package products
 
-import "github.com/gofiber/fiber"
+import "github.com/raene/fiberWeb/config"
 
 /*
 App type holds values needed for the app handlers to function
 in this case Router and Db values
 */
-type App struct {
-	Router fiber.Router
+type Product struct {
+	Config *config.App
 }
 
 //SetupRoutes sets up all routes
-func (a *App) SetupRoutes() {
-	product := a.Router.Group("/product")
+func (a *Product) SetupRoutes() {
+	product := a.Config.Router.Group("/product")
 	product.Get("/", a.helloWorld)
 }

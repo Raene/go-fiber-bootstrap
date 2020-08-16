@@ -1,22 +1,18 @@
 package books
 
-import (
-	"github.com/gofiber/fiber"
-	"github.com/jinzhu/gorm"
-)
+import "github.com/raene/fiberWeb/config"
 
 /*
-App type holds values needed for the app handlers to function
+Book type holds values needed for the app handlers to function,
 in this case Router and Db values
 */
-type App struct {
-	Router fiber.Router
-	Db     *gorm.DB
+type Book struct {
+	Config *config.App
 }
 
 //SetupRoutes sets up all routes
-func (a *App) SetupRoutes() {
-	books := a.Router.Group("/books")
+func (a *Book) SetupRoutes() {
+	books := a.Config.Router.Group("/books")
 	books.Get("/", a.helloWorld)
 	books.Post("/", a.createBook)
 }
